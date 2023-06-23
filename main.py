@@ -5,7 +5,9 @@ from threading import Thread, Event
 
 def main():
     """
-    The main function controlling the animation, the scraping and saving processes. The animation is running on a separate thread and is controlled by an Event flag which stops the thread when set to True.
+    The main function controlling the animation, the scraping and saving processes.
+    The animation is running on a separate thread and is controlled by an Event flag
+    which stops the thread when set to True.
     """
     event_flag = Event()
     t = Thread(target=animate, args=(event_flag,))

@@ -6,7 +6,8 @@ import json
 
 def sanitize(str):
     """
-    Cleans and returns the input string after removing unnecessary characters and formatting from Wikipedia such as phonetic alphabet and reference notations.
+    Cleans and returns the input string after removing unnecessary characters
+    and formatting from Wikipedia such as phonetic alphabet and reference notations.
 
     @param str: the input string to be cleaned
     @return: the cleaned string
@@ -46,7 +47,8 @@ def get_first_paragraph(wikipedia_url, session):
 
 def get_leaders():
     """
-    Fetches information about world leaders from an API and scrapes the first paragraph of each leaders from Wikipedia. Will also set a new cookie from the API if the cookie expires.
+    Fetches information about world leaders from an API and scrapes the first paragraph
+    of each leaders from Wikipedia. Will also set a new cookie from the API if the cookie expires.
 
     @return: a dictionary with countries as keys and a list of leaders with additional information as values.
     """
