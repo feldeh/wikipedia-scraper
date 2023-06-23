@@ -12,8 +12,6 @@ def animate(event_flag):
     for c in cycle(['|', '/', '-', '\\']):
         if event_flag.is_set():
             break
-        terminal.write('\rscraping ' + c)
+        terminal.write('\rscraping in progress ' + c + '  ')
         terminal.flush()
         sleep(0.1)
-    terminal.write('\r')
-    terminal.flush()
