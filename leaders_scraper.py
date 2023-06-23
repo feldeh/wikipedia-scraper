@@ -5,6 +5,12 @@ import json
 
 
 def sanitize(str):
+    """
+    Cleans and returns the input string after removing unnecessary characters and formatting from Wikipedia such as phonetic alphabet and reference notations.
+
+    @param str: the input string to be cleaned
+    @return: the cleaned string
+    """
     semicolon_cleanup = re.compile(r"\/(.*);")
     second_cleanup = re.compile(r"(\/(.*?)\/)|(\[(.*?)\])|(Écouter)|(\(listen\))|(uitspraak)|(\(info / uitleg\))")
     parentheses_cleanup = re.compile(r"\(\s*\)")
@@ -18,6 +24,13 @@ def sanitize(str):
 
 
 def get_first_paragraph(wikipedia_url, session):
+    """
+    Scrapes and returns the first paragraph of the Wikipedia page from the input url.
+
+    @param wikipedia_url: the url of the Wikipedia page.
+    @param session: the requests session object for making HTTP requests.
+    @return: the first paragraph of the Wikipedia page.
+    """
     res = session.get(wikipedia_url)
     content = res.content
     soup = BeautifulSoup(content, 'html.parser')
@@ -32,6 +45,11 @@ def get_first_paragraph(wikipedia_url, session):
 
 
 def get_leaders():
+    """
+    Fetches information about world leaders from an API and scrapes the first paragraph of each leaders from Wikipedia. Will also set a new cookie from the API if the cookie expires.
+
+    @return: a dictionary with countries as keys and a list of leaders with additional information as values.
+    """
     base_url = "https://country-leaders.onrender.com"
     leaders_url = base_url + "/leaders"
     cookie_url = base_url + "/cookie"
@@ -52,7 +70,6 @@ def get_leaders():
                 cookie_res = session.get(cookie_url)
                 cookies = cookie_res.cookies.get_dict()
                 leaders_res = requests.get(leaders_url, params=params, cookies=cookies)
-                print(leaders_res.json())
 
             leaders = leaders_res.json()
             leaders_per_country[country] = leaders
@@ -66,5 +83,10 @@ def get_leaders():
 
 
 def save(leaders_per_country):
+    """
+    Saves the data into a JSON file in a readable format.
+
+    @param leaders_per_country: the data to be saved.
+    """
     with open("leaders.json", "w", encoding="utf-8") as f:
         json.dump(leaders_per_country, f, ensure_ascii=False, indent=4)
