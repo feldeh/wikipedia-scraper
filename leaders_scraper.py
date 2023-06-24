@@ -15,7 +15,7 @@ def sanitize(str):
     semicolon_cleanup = re.compile(r"\/(.*);")
     second_cleanup = re.compile(r"(\/(.*?)\/)|(\[(.*?)\])|(Écouter)|(\(listen\))|(uitspraak)|(\(info / uitleg\))")
     parentheses_cleanup = re.compile(r"\(\s*\)")
-    last_cleanup = re.compile(r"\s{2,}|\xa0")
+    last_cleanup = re.compile(r"\s{2,}")
 
     removed_semi = re.sub(semicolon_cleanup, "", str)
     removed_second = re.sub(second_cleanup, "", removed_semi)
@@ -63,22 +63,22 @@ def get_leaders():
 
     leaders_per_country = {}
 
-    with requests.Session() as session:
-        for country in countries_list:
-            params = "country=" + country
+    for country in countries_list:
+        params = "country=" + country
+        leaders_res = requests.get(leaders_url, params=params, cookies=cookies)
+
+        if leaders_res.status_code == 403:
+            cookie_res = requests.get(cookie_url)
+            cookies = cookie_res.cookies.get_dict()
             leaders_res = requests.get(leaders_url, params=params, cookies=cookies)
 
-            if leaders_res.status_code == 403:
-                cookie_res = session.get(cookie_url)
-                cookies = cookie_res.cookies.get_dict()
-                leaders_res = requests.get(leaders_url, params=params, cookies=cookies)
+        leaders = leaders_res.json()
+        leaders_per_country[country] = leaders
 
-            leaders = leaders_res.json()
-            leaders_per_country[country] = leaders
-
+        with requests.Session() as wiki_session:
             for i in range(len(leaders)):
                 leader_url = leaders[i]["wikipedia_url"]
-                first_paragraph = get_first_paragraph(leader_url, session)
+                first_paragraph = get_first_paragraph(leader_url, wiki_session)
                 leaders_per_country[country][i]["wikipedia_first_paragraph"] = first_paragraph
 
     return leaders_per_country
